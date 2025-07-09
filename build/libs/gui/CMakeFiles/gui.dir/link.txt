@@ -1,0 +1,2 @@
+/usr/bin/ar qc libgui.a CMakeFiles/gui.dir/gui_autogen/mocs_compilation.cpp.o CMakeFiles/gui.dir/src/Neuvisysgui.cpp.o CMakeFiles/gui.dir/src/Neuvisysthread.cpp.o CMakeFiles/gui.dir/src/GLWidget.cpp.o
+/usr/bin/ranlib libgui.a

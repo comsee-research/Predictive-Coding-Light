@@ -1,0 +1,98 @@
+/**
+ * \file comserie.hpp
+ * \author Sébastien.BONNET
+ * \date 31/10/05
+ **/
+ 
+#ifndef __COMSERIE_HPP__
+#define __COMSERIE_HPP__
+
+#include <iostream>
+#include <stdint.h>
+#include <termios.h>
+#include <memory.h>
+#include <fcntl.h>
+#include <string>
+
+#define COM1 "/dev/ttyS0"
+#define COM2 "/dev/ttyS1"
+#define COM3 "/dev/ttyS2"
+#define COM4 "/dev/ttyS3"
+#define COM5 "/dev/ttyS4"
+#define COM6 "/dev/ttyS5"
+   
+using namespace std;
+
+/// @class ComSerie
+/// @short Communication série bloquante avec timeout.
+class ComSerie
+{
+public:
+   /// @short  Constructeur.
+   ComSerie();
+
+   /// @short  Destructeur.
+   ~ComSerie();
+
+   /// @short  Permet d'ouvrir et de configurer un port serie.
+   /// @param  port L'identificateur du port serie.
+   /// @param  parametresCommunication Les paramètres associés (correspond 
+   ///         au champ c_cflag d'une structure termios (paramètres definis 
+   ///         dans "asm/termbits.h")
+   /// @param  timeout Temps au délà duquel la reception est considérée comme
+   ///         un échec. Exprimé en dixième de seconde.
+   /// @return -1 si problème, 0 sinon.
+   int ouvrir(string port, unsigned int parametresCommunication,
+              unsigned int timeout);
+
+   /// @short  Ferme le port série et lui restaure ses paramètres initiaux.
+   /// @return -1 si aucun port com n'était ouvert, 0 sinon.
+   int fermer();
+
+   /// @short Nettoie les données présentes sur le port com non lues.
+   void flush();
+
+   /// @short  Envoi une trame sur le port série.
+   /// @param  buf Un tableau d'octets contenant la trame à envoyer.
+   /// @param  taille La taille du tableau en octet.
+   /// @return
+   int envoyer(const uint8_t * buf, const uint32_t taille);
+
+   /// @short  Lit une trame sur le port série.
+   /// @param  buf Un tableau d'octets contenant la trame à recevoir.
+   /// @param  tailleVoulue La taille en octet de la trame à recevoir.
+   /// @return Si tous les octets attendus n'ont pas été recus avant un certain
+   ///         temps défini par timeout_, retourne 0.
+   ///         Sinon retourne le nombre d'octets effectivement lus.
+   int recevoir(uint8_t * buf, const uint32_t tailleVoulue);
+
+private:
+   /// @short  Methode de configuration du port serie.   
+   void config_();
+
+private:
+   /// @short  Identificateur du port serie.
+   string port_;
+
+   /// @short  Parametres de communication correspondant au champ c_cflag d'une
+   ///         structure termios (paramètres definis dans "asm/termbits.h")
+   unsigned int parametresCommunication_;
+
+   /// @short  Temps au délà duquel la reception est considérée comme un échec.
+   unsigned int timeout_;
+
+   /// @short  Structure de configuration du port serie.
+   struct termios tios_;
+
+   /// @short  Structure de configuration utilisée pour sauvegarder
+   ///         les anciens paramètres du port serie.
+   struct termios old_;
+
+   /// @short  Descripteur pour le fichier associé au port serie ouvert.
+   int fd_;
+
+   /// @short  Indicateur de l'état de la communication (ouverte ou non).
+   bool comOuverte_;
+};
+
+#endif

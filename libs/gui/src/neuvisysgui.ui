@@ -1,0 +1,763 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NeuvisysGUI</class>
+ <widget class="QMainWindow" name="NeuvisysGUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1402</width>
+    <height>776</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>NeuvisysGUI</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout_9">
+    <item row="3" column="0" colspan="2">
+     <layout class="QFormLayout" name="formLayoutProgress">
+      <item row="0" column="0">
+       <widget class="QLCDNumber" name="lcd_sim_time">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="smallDecimalPoint">
+         <bool>false</bool>
+        </property>
+        <property name="digitCount">
+         <number>15</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QProgressBar" name="progressBar">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="value">
+         <number>24</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tab_selection">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>500</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="launch_options">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <attribute name="title">
+        <string>Launch Options</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="3" column="0">
+         <layout class="QVBoxLayout" name="verticalLayoutNetwork">
+          <item>
+           <widget class="QPushButton" name="button_launch_network">
+            <property name="text">
+             <string>Launch Network</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="button_stop_network">
+            <property name="text">
+             <string>Stop Network</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTextEdit" name="console">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="0">
+         <layout class="QGridLayout" name="gridLayoutFiles">
+          <item row="0" column="0">
+           <widget class="QPushButton" name="button_event_file">
+            <property name="text">
+             <string>Select Event File</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLineEdit" name="text_event_file"/>
+          </item>
+          <item row="2" column="2">
+           <widget class="QSpinBox" name="number_runs">
+            <property name="maximum">
+             <number>10000</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_number_runs">
+            <property name="text">
+             <string>Number of runs</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="BoxLayoutChoice">
+          <item>
+           <widget class="QRadioButton" name="recording">
+            <property name="text">
+             <string>Recording</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">modeChoice</string>
+            </attribute>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="realtime">
+            <property name="text">
+             <string>Realtime</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">modeChoice</string>
+            </attribute>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="simulation">
+            <property name="text">
+             <string>Simulation</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">modeChoice</string>
+            </attribute>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="events_only">
+            <property name="text">
+             <string>EventsOnly</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">modeChoice</string>
+            </attribute>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="selection">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <attribute name="title">
+        <string>Selection</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QGroupBox" name="groupBoxNetworkSelection">
+          <property name="title">
+           <string>Network Selection</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <layout class="QFormLayout" name="formLayoutNetworkSelection">
+             <item row="0" column="0" colspan="2">
+              <widget class="QGroupBox" name="groupBoxLayerSelection">
+               <property name="title">
+                <string>Layer selection</string>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_19">
+                <item row="0" column="0">
+                 <widget class="QSlider" name="slider_layer">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TicksAbove</enum>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_camera">
+               <property name="text">
+                <string>Camera</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QSpinBox" name="spin_camera_selection"/>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_synapse">
+               <property name="text">
+                <string>Synapse</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QSpinBox" name="spin_synapse_selection"/>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBoxNeuronSelection">
+          <property name="title">
+           <string>Neuron Selection</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <layout class="QFormLayout" name="formLayoutZSelection">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_zcell">
+               <property name="text">
+                <string>Z</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QSpinBox" name="spin_zcell_selection"/>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QScrollArea" name="scrollAreaNeuronSelection">
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContentsNeuronSelection">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>452</width>
+                <height>160</height>
+               </rect>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_24">
+               <item row="0" column="0">
+                <layout class="QGridLayout" name="gridSelection">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetMinAndMaxSize</enum>
+                 </property>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBoxGraphs">
+          <property name="title">
+           <string>Graphs parameters</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item alignment="Qt::AlignHCenter">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Event Viz</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QGridLayout" name="gridLayoutEventViz">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_precision_event">
+               <property name="text">
+                <string>Precision (ms)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLCDNumber" name="lcd_precision_event"/>
+             </item>
+             <item row="0" column="1">
+              <widget class="QSlider" name="slider_precision_event">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::NoTicks</enum>
+               </property>
+               <property name="tickInterval">
+                <number>100</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item alignment="Qt::AlignHCenter">
+            <widget class="QLabel" name="label_potential">
+             <property name="text">
+              <string>Potential</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QGridLayout" name="gridLayoutPotential">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_range_potential">
+               <property name="text">
+                <string>Range (ms)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QSlider" name="slider_range_potential">
+               <property name="maximum">
+                <number>100000</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::NoTicks</enum>
+               </property>
+               <property name="tickInterval">
+                <number>1000</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLCDNumber" name="lcd_range_potential"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_precision_potential">
+               <property name="text">
+                <string>Precision (ms)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QSlider" name="slider_precision_potential">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::NoTicks</enum>
+               </property>
+               <property name="tickInterval">
+                <number>100</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLCDNumber" name="lcd_precision_potential"/>
+             </item>
+            </layout>
+           </item>
+           <item alignment="Qt::AlignHCenter">
+            <widget class="QLabel" name="label_spiketrain">
+             <property name="text">
+              <string>Spiketrain</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QGridLayout" name="gridLayoutSpiketrain">
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_range_spiketrain">
+               <property name="text">
+                <string>Range (ms)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QSlider" name="slider_range_spiketrain">
+               <property name="maximum">
+                <number>10000</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::NoTicks</enum>
+               </property>
+               <property name="tickInterval">
+                <number>1000</number>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLCDNumber" name="lcd_range_spiketrain"/>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_creation">
+       <attribute name="title">
+        <string>Network Creation</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QPushButton" name="button_create_network">
+          <property name="text">
+           <string>Create Network</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="button_network_directory">
+          <property name="text">
+           <string>Select Network Directory</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="text_network_directory"/>
+        </item>
+        <item>
+         <widget class="QTabWidget" name="tab_configs">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <widget class="QWidget" name="network_config">
+           <attribute name="title">
+            <string>Network config</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_11">
+            <item row="0" column="0">
+             <widget class="QTextEdit" name="text_network_config"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="simple_cell_config">
+           <attribute name="title">
+            <string>Simple cell config</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_12">
+            <item row="0" column="0">
+             <widget class="QTextEdit" name="text_simple_cell_config"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="complex_cell_config">
+           <attribute name="title">
+            <string>Complex cell config</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_13">
+            <item row="0" column="0">
+             <widget class="QTextEdit" name="text_complex_cell_config"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QTabWidget" name="tab_visualization">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="event_viz">
+       <attribute name="title">
+        <string>Event Viz</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="0" column="0">
+         <widget class="QScrollArea" name="scroll_event_viz">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>852</width>
+             <height>626</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinAndMaxSize</enum>
+            </property>
+            <item>
+             <widget class="GLWidget" name="opengl_left_events"/>
+            </item>
+            <item>
+             <widget class="GLWidget" name="opengl_right_events"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="statistics">
+       <attribute name="title">
+        <string>Statistics</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QChartView" name="eventRateView"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QChartView" name="networkRateView"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="weights">
+       <attribute name="title">
+        <string>Weights</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="0" column="0">
+         <widget class="QScrollArea" name="scrollAreaWeights">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaLayoutWeights">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>96</width>
+             <height>26</height>
+            </rect>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_15">
+            <item row="0" column="0">
+             <layout class="QGridLayout" name="weightLayout">
+              <property name="sizeConstraint">
+               <enum>QLayout::SetMinAndMaxSize</enum>
+              </property>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="potential">
+       <attribute name="title">
+        <string>Potential</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="1" column="0">
+         <layout class="QHBoxLayout" name="neuron_statistics">
+          <item>
+           <widget class="QLabel" name="label_spike_rate">
+            <property name="text">
+             <string>Spike Rate (spikes/s)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLCDNumber" name="lcd_spike_rate">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="digitCount">
+             <number>5</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_threshold">
+            <property name="text">
+             <string>Threshold (mV):</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLCDNumber" name="lcd_threshold">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="digitCount">
+             <number>5</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_reset">
+            <property name="text">
+             <string>Reset Potential (mV)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLCDNumber" name="lcd_reset">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>100</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="0">
+         <widget class="QChartView" name="potentialView"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="spiketrain">
+       <attribute name="title">
+        <string>Spiketrain</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_10">
+        <item row="0" column="0">
+         <widget class="QChartView" name="spikeView"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="reward">
+       <attribute name="title">
+        <string>Reward</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_20">
+        <item row="0" column="0">
+         <widget class="QChartView" name="rewardView"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="action">
+       <attribute name="title">
+        <string>Action</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QChartView" name="actionView"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1402</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuNeuvisys_gui">
+    <property name="title">
+     <string>Neuvisys-gui</string>
+    </property>
+   </widget>
+   <addaction name="menuNeuvisys_gui"/>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QChartView</class>
+   <extends>QGraphicsView</extends>
+   <header>QtCharts</header>
+  </customwidget>
+  <customwidget>
+   <class>GLWidget</class>
+   <extends>QOpenGLWidget</extends>
+   <header>GLWidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>tab_selection</tabstop>
+  <tabstop>button_event_file</tabstop>
+  <tabstop>text_event_file</tabstop>
+  <tabstop>number_runs</tabstop>
+  <tabstop>tab_visualization</tabstop>
+  <tabstop>potentialView</tabstop>
+  <tabstop>spikeView</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="modeChoice"/>
+ </buttongroups>
+</ui>

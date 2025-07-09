@@ -1,0 +1,54 @@
+8
+
+dir
+1151
+http://agartha/svn/utilitairescycab/trunk/configgps/libserie
+http://agartha/svn
+
+
+
+2008-02-25T13:55:21.337033Z
+1057
+seb.bonnet
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+c61106ee-b91c-416c-a178-2ddf1fb276d5
+
+comserie.cpp
+file
+
+
+
+
+2008-03-05T09:13:36.000000Z
+5b3358ede682ccb5a0867bebb0311315
+2008-02-25T13:55:21.337033Z
+1057
+seb.bonnet
+has-props
+
+comserie.hpp
+file
+
+
+
+
+2008-03-05T09:13:36.000000Z
+eb4e0c1deacf045ec46e8534f0d408fb
+2008-02-25T13:55:21.337033Z
+1057
+seb.bonnet
+has-props
+
