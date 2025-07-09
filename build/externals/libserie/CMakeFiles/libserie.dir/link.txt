@@ -1,2 +1,0 @@
-/usr/bin/ar qc liblibserie.a CMakeFiles/libserie.dir/comserie.cpp.o CMakeFiles/libserie.dir/Faulhaber.cpp.o
-/usr/bin/ranlib liblibserie.a
