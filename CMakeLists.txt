@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.10.0)
 
+link_libraries( "$<$<AND:$<CXX_COMPILER_ID:GNU>,$<VERSION_LESS:$<CXX_COMPILER_VERSION>,9.0>>:-lstdc++fs>" )
+
 # Extract version from header, done first to satisfy CMP0048,
 # see `cmake --help-policy CMP0048` for more information.
 file(
@@ -39,6 +41,13 @@ option(BUILD_GUI "Enable to use graphical user interface" OFF)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+FetchContent_MakeAvailable(googletest)
 
 IF (NOT CMAKE_INSTALL_PREFIX)
     IF (UNIX AND NOT APPLE)

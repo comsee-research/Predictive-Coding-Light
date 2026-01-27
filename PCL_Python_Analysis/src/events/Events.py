@@ -14,6 +14,7 @@ import skvideo.io
 from dv import AedatFile
 from tqdm import tqdm
 import cv2 as cv
+import imageio.v3 as iio
 
 
 def render(x: np.ndarray, y: np.ndarray, pol: np.ndarray, height: int, width: int) -> np.ndarray:
@@ -168,7 +169,7 @@ class Events:
                 group.create_dataset("c", self.event_array["c"].shape, dtype=self.event_array["c"].dtype,
                                      data=self.event_array["c"], compression="gzip")
 
-    def to_video(self, dt_miliseconds, dest, width, height):
+    def to_video(self, dt_miliseconds, dest, width, height, shift_x=0, shift_y=0, fps=10):
         # rate = 50
         # writer = skvideo.io.FFmpegWriter(Path(dest + ".gif"), inputdict={
         #       '-r': str(rate),
@@ -176,20 +177,20 @@ class Events:
         #     outputdict={
         #       '-r': str(rate),
         # })
-        m_x = 0#141
-        m_y = 0#96
+        m_x = shift_x#141
+        m_y = shift_y #96
         pad = 0 #2 #1 #2
         overlap = 3
-        writer = skvideo.io.FFmpegWriter(Path(dest + ".gif"))
         ct = 0
+        frames = []
         for events in tqdm(EventSlicer(self.get_events(), dt_miliseconds)):
-            img = render(events["x"], events["y"], events["p"], height, width)
+            img = render(events["x"]-m_x, events["y"]-m_y, events["p"], height, width)
 
-            img = cv.rectangle(img,(128-m_x-pad,128-m_y-pad),(148-m_x+pad,148-m_y+pad),(255,255,255),1)
+            #img = cv.rectangle(img,(128-m_x-pad,128-m_y-pad),(148-m_x+pad,148-m_y+pad),(255,255,255),1)
 
-            writer.writeFrame(img)
+            frames.append(img)
             ct+=1
-        writer.close()
+        iio.imwrite(dest + ".gif", frames, fps=fps)
 
     def to_pic(self, dt_miliseconds, dest, width, height):
         writer = skvideo.io.FFmpegWriter(Path(dest + ".mp4"))

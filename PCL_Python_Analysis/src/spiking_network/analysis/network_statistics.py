@@ -341,7 +341,7 @@ def visualize_inhibition_weights(spinet: SpikingNetwork, layer_id, neuron_id):
     true_z = []
     avg = []
     for z in range(spinet.l_shape[layer_id][2]):
-        lateral_weights.append(spinet.neurons[layer_id][neuron_id].weights_lic)
+        lateral_weights.append(spinet.neurons[layer_id][neuron_id].weights_li)
         true_z.append(z)
     layout = np.load(spinet.path + "weights/layout_" + str(layer_id) + ".npy")
     x_neur = np.where(layout == neuron_id)[0][0]
@@ -375,12 +375,13 @@ def visualize_inhibition_weights(spinet: SpikingNetwork, layer_id, neuron_id):
         max_ = max(avg)
         avg = np.array(avg)/max_
         ax = fig.add_subplot(111)
-        Blues = plt.get_cmap('Blues')
+        # Blues = plt.get_cmap('Blues')
+        cmap = plt.get_cmap('spring')
         rect = []
         for var in range(len(x)):
             rect.append(matplotlib.patches.Rectangle(
-                (x[var], y[var]), space, space, color=Blues(avg[var])))
-            ax.add_patch(rect[var])
+                (x[var], y[var]), space, space, color=cmap(avg[var])))
+            ax.add_patch(rect[var])# (x[var], y[var]), space, space, color=spring(avg[var])))
         rect.append(matplotlib.patches.Rectangle(
             (x_neur, y_neur), space, space, color='k'))
         ax.add_patch(rect[-1])
@@ -393,7 +394,7 @@ def visualize_inhibition_weights(spinet: SpikingNetwork, layer_id, neuron_id):
         else:
             plt.xlim([x[0], x[-1]+space])
             plt.ylim([y[0], y[-1]+space])
-        cmapp = matplotlib.cm.ScalarMappable(cmap=Blues)
+        cmapp = matplotlib.cm.ScalarMappable(cmap=cmap)
         cmapp.set_clim(0, max_)
         plt.colorbar(cmapp, ax=ax, ticks=(0, max_/4, max_/2, 3*max_/4, max_))
         plt.gca().set_aspect('equal', adjustable='box')
@@ -477,7 +478,8 @@ def visualize_td_inhibition(spinet: SpikingNetwork, layer_id, neuron_id):
     space = 1
     fig = plt.figure(figsize=(20, 20), dpi=80)
     ax = fig.add_subplot(111)
-    Blues = plt.get_cmap('Blues')
+    #Blues = plt.get_cmap('Blues')
+    cmap = plt.get_cmap('spring')
     rect = []
     ordinate = np.linspace(0,len(weights_tdi)/depth -1,int(len(weights_tdi)/depth))
     y_i=0
@@ -490,9 +492,9 @@ def visualize_td_inhibition(spinet: SpikingNetwork, layer_id, neuron_id):
         else:
             x_i=i-y_i*depth
         rect.append(matplotlib.patches.Rectangle(
-            (x_i, ordinate[y_i]), space, space, color=Blues(value)))
+            (x_i, ordinate[y_i]), space, space, color=cmap(value))) #(x[var], y[var]), space, space, color=Blues(avg[var])))
         ax.add_patch(rect[i])
-    cmapp = matplotlib.cm.ScalarMappable(cmap=Blues)
+    cmapp = matplotlib.cm.ScalarMappable(cmap=cmap)
     cmapp.set_clim(0, max_)
     plt.colorbar(cmapp, ax=ax, ticks=(0, max_/4, max_/2, 3*max_/4, max_))
     plt.gca().set_aspect('equal', adjustable='box')

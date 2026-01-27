@@ -1195,7 +1195,7 @@ void SurroundSuppression::classificationDescriptor(const std::vector<std::string
             parameters_in_events params; 
             params.push_back(act_label);
             int sim = 0;
-            for (const auto & frame : std::filesystem::directory_iterator{vectorOfPath[label-1]}) { // label -1 for gestures
+            for (const auto & frame : std::experimental::filesystem::directory_iterator{vectorOfPath[label-1]}) { // label -1 for gestures
                 if(sim==n_sim) {
                     break;
                 }
@@ -1224,7 +1224,7 @@ void SurroundSuppression::recordSpikes(const std::string &vectorOfPath) {
     int n_sim = 3500;
     if(ok) {
         int sim = 0;
-        for (const auto & frame : std::filesystem::directory_iterator{vectorOfPath}) { 
+        for (const auto & frame : std::experimental::filesystem::directory_iterator{vectorOfPath}) { 
             if(sim==n_sim) {
                 break;
             }

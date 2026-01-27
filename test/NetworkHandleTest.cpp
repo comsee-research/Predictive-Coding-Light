@@ -10,7 +10,7 @@ std::string NetworkHandleTest::networkPath;
 
 void NetworkHandleTest::SetUpTestSuite() {
     eventsPath = "../../data/events/shapes.h5";
-    EXPECT_EQ(std::filesystem::exists("../../data/events/shapes.h5"), true);
+    EXPECT_EQ(std::experimental::filesystem::exists("../../data/events/shapes.h5"), true);
     networkPath = "../../data/networks/network_test/";
 
     NetworkConfig::createNetwork("../../data/networks/network_test", PredefinedConfigurations::twoLayerOnePatchWeightSharingCenteredConfig);
@@ -24,7 +24,7 @@ void NetworkHandleTest::SetUpTestSuite() {
 void NetworkHandleTest::TearDownTestSuite() {
     delete network;
     network = nullptr;
-    std::filesystem::remove_all(networkPath);
+    std::experimental::filesystem::remove_all(networkPath);
 }
 
 TEST_F(NetworkHandleTest, runningNetwork) {

@@ -85,8 +85,8 @@ def execute(cmd):
         raise subprocess.CalledProcessError(return_code, cmd)
 
 
-def launch_neuvisys_multi_pass(exec_path, network_path, event_file, nb_pass):
-    for path in execute([exec_path, network_path, event_file, str(nb_pass)]):
+def launch_neuvisys_multi_pass(exec_path, network_path, event_file, nb_pass, recordSpikes="false"):
+    for path in execute([exec_path, network_path+"/", event_file, str(nb_pass), recordSpikes]):
         print(path, end="")
 
 

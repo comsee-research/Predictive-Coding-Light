@@ -528,9 +528,22 @@ class Neuron:
             self.conf = json.load(file)
         with open(weight_path + str(self.id) + ".json") as file:
             self.params = json.load(file)
-        if self.type == "SimpleCell":
-            # self.weights_tdi = np.load(weight_path + str(self.id) + "tdi.npy")
-            self.weights_li = np.load(weight_path + str(self.id) + "li.npy")
+        
+        # Load lateral and topdown inhibition weights based on neuron's actual connections
+        self.weights_li = None
+        self.weights_tdi = None
+        
+        # Check if neuron has lateral inhibition connections (check if array is not empty)
+        if len(self.params["lateral_dynamic_inhibition"]) > 0:
+            li_path = weight_path + str(self.id) + "li.npy"
+            if os.path.exists(li_path):
+                self.weights_li = np.load(li_path)
+        
+        # Check if neuron has topdown inhibition connections
+        if len(self.params["topdown_dynamic_inhibition"]) > 0:
+            tdi_path = weight_path + str(self.id) + "tdi.npy"
+            if os.path.exists(tdi_path):
+                self.weights_tdi = np.load(tdi_path)
 
         self.spike_train = np.array(self.params["spike_train"])
         self.weights = 0

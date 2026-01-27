@@ -10,11 +10,11 @@ void SpikingNetworkTest::SetUp() {
 }
 
 void SpikingNetworkTest::TearDown() {
-    std::filesystem::remove_all("../../data/networks/network_test/");
+    std::experimental::filesystem::remove_all("../../data/networks/network_test/");
 }
 
 TEST_F(SpikingNetworkTest, folderCreation) {
-    EXPECT_EQ(std::filesystem::exists("../../data/networks/network_test"), true);
+    EXPECT_EQ(std::experimental::filesystem::exists("../../data/networks/network_test"), true);
 }
 
 TEST_F(SpikingNetworkTest, networkCreation) {
