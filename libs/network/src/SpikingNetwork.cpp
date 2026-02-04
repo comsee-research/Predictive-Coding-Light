@@ -1053,22 +1053,26 @@ void SpikingNetwork::computeBinTS() {
 
 void SpikingNetwork::saveNewDescriptor(std::vector<std::vector<double>> x, std::vector<size_t> y) {
     int it = 0;
-    // fs::create_directory(m_networkConf.getNetworkPath() + "statistics/mnist" + "/");
-    // fs::create_directory(m_networkConf.getNetworkPath() + "statistics/mnist" + "/" + std::to_string(y[0]) + "/");
-    // for (const auto & file : fs::directory_iterator{m_networkConf.getNetworkPath() + "statistics/mnist" + "/"
-    fs::create_directory(m_networkConf.getNetworkPath() + "statistics/gesture" + "/");
-    fs::create_directory(m_networkConf.getNetworkPath() + "statistics/gesture" + "/" + std::to_string(y[0]) + "/");
-    for (const auto & file : fs::directory_iterator{m_networkConf.getNetworkPath() + "statistics/gesture" + "/"
-                        + std::to_string(y[0]) + "/" }) 
-        {
+    
+    // Use spike recording output subfolder from config if available, otherwise default to "descriptors"
+    std::string outputFolder = "descriptors";
+    if (m_networkConf.isSpikeRecordingEnabled()) {
+        outputFolder = m_networkConf.getSpikeRecordingConfig().outputSubfolder;
+    }
+    
+    std::string basePath = m_networkConf.getNetworkPath() + "statistics/" + outputFolder;
+    fs::create_directory(basePath);
+    fs::create_directory(basePath + "/" + std::to_string(y[0]));
+    
+    for (const auto & file : fs::directory_iterator{basePath + "/" + std::to_string(y[0]) + "/"}) {
         it+=1;
     }
+    
     nlohmann::json state;
     state["x"] = x;
     state["y"] = y;
-    // std::ofstream ofs(m_networkConf.getNetworkPath() + "statistics/mnist" +  "/" +
-    std::ofstream ofs(m_networkConf.getNetworkPath() + "statistics/gesture" +  "/" +
-                    std::to_string(y[0]) + "/" + std::to_string(it) + ".json");
+    
+    std::ofstream ofs(basePath + "/" + std::to_string(y[0]) + "/" + std::to_string(it) + ".json");
     if (ofs.is_open()) {
         ofs << std::setw(4) << state << std::endl;
     } else {

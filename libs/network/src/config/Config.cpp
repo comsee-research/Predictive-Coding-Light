@@ -39,6 +39,24 @@ void NetworkConfig::loadNetworkLayout() {
                 connections[i].neuronSizes = static_cast<std::vector<std::vector<size_t>>>(conf["neuronSizes"][i]);
                 connections[i].neuronOverlap = static_cast<std::vector<size_t>>(conf["neuronOverlap"][i]);
             }
+
+            // Load spike recording config (optional section - defaults to disabled)
+            if (conf.contains("spikeRecording")) {
+                auto& sr = conf["spikeRecording"];
+                spikeRecording.enabled = sr.value("enabled", false);
+                if (sr.contains("layersToRecord")) {
+                    spikeRecording.layersToRecord = static_cast<std::vector<size_t>>(sr["layersToRecord"]);
+                    // Validate layer indices
+                    for (size_t layer : spikeRecording.layersToRecord) {
+                        if (layer >= connections.size()) {
+                            std::cerr << "Warning: spikeRecording.layersToRecord contains invalid layer index " 
+                                      << layer << " (network has " << connections.size() << " layers)" << std::endl;
+                        }
+                    }
+                }
+                spikeRecording.maxSamplesPerClass = sr.value("maxSamplesPerClass", 0);
+                spikeRecording.outputSubfolder = sr.value("outputSubfolder", "recorded_spikes");
+            }
         } catch (const std::exception &e) {
             std::cerr << "In network config file:" << e.what() << std::endl;
             throw;

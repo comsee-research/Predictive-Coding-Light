@@ -19,6 +19,7 @@ set(NEUVISYS_NETWORK_SOURCES
 		${SRC_BASE_PATH}/SpikingNetwork.cpp
         ${SRC_BASE_PATH}/NetworkHandle.cpp
 		${SRC_BASE_PATH}/SurroundSuppression.cpp
+		${SRC_BASE_PATH}/DatasetScanner.cpp
         #---------
         ${SRC_BASE_PATH}/neurons/Neuron.cpp
         ${SRC_BASE_PATH}/neurons/SimpleNeuron.cpp
@@ -37,6 +38,7 @@ set(NEUVISYS_NETWORK_HEADERS
 		${HDRS_BASE_PATH}/SpikingNetwork.hpp
         ${HDRS_BASE_PATH}/NetworkHandle.hpp
 		${HDRS_BASE_PATH}/SurroundSuppression.hpp
+		${HDRS_BASE_PATH}/DatasetScanner.hpp
         #---------
         ${HDRS_BASE_PATH}/neurons/Neuron.hpp
         ${HDRS_BASE_PATH}/neurons/SimpleNeuron.hpp

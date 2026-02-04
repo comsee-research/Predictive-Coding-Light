@@ -6,6 +6,7 @@
 #define NEUVISYS_DV_NETWORK_HANDLE_HPP
 
 #include "SpikingNetwork.hpp"
+#include "DatasetScanner.hpp"
 
 struct H5EventFile {
     H5::H5File file;
@@ -132,6 +133,22 @@ public:
     void normalizeL1Weights();
 
     void assignPatchSize(double patch);
+
+    /**
+     * Record spikes for all samples in a labeled dataset.
+     * Uses DatasetScanner to auto-detect class structure from the path.
+     * Respects spikeRecording configuration from network_config.json.
+     * 
+     * @param datasetPath Path to the dataset root (containing class subdirectories)
+     * @return true if recording completed successfully, false otherwise
+     */
+    bool recordSpikesForDataset(const std::string& datasetPath);
+
+    /**
+     * Get the dataset structure for a given path without recording spikes.
+     * Useful for validation and preview before recording.
+     */
+    DatasetStructure scanDataset(const std::string& datasetPath);
 
 
 private:

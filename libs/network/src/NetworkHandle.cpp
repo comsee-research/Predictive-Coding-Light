@@ -247,7 +247,6 @@ void NetworkHandle::saveStatistics(size_t simulation, size_t sequence, const std
     else {
         m_iteration = 0;
         if(m_spinet.getEventsParameters()==0) {
-            std::cout << "yo?" << std::endl;
             m_spinet.saveStatistics(simulation, sequence, folderName, sep_speed, n_speed);
         }
     }
@@ -570,4 +569,100 @@ void NetworkHandle::setSequenceParameters(std::vector<std::vector<size_t>> param
 
 void NetworkHandle::deactivateDynamicInhib(bool activation) {
     m_spinet.setDynamicActivation(activation);
+}
+
+DatasetStructure NetworkHandle::scanDataset(const std::string& datasetPath) {
+    return DatasetScanner::scan(datasetPath);
+}
+
+bool NetworkHandle::recordSpikesForDataset(const std::string& datasetPath) {
+    // Check if spike recording is enabled in config
+    if (!m_networkConf.isSpikeRecordingEnabled()) {
+        std::cerr << "Spike recording is disabled in network config. "
+                  << "Set spikeRecording.enabled = true in network_config.json" << std::endl;
+        return false;
+    }
+    
+    // Scan dataset structure
+    DatasetStructure dataset = DatasetScanner::scan(datasetPath);
+    if (!dataset.isValid) {
+        std::cerr << "Failed to scan dataset: " << dataset.errorMessage << std::endl;
+        return false;
+    }
+    
+    // Print dataset info
+    DatasetScanner::printStructure(dataset);
+    
+    // Get spike recording config
+    const auto& srConfig = m_networkConf.getSpikeRecordingConfig();
+    size_t maxSamples = srConfig.maxSamplesPerClass;
+    std::string outputFolder = srConfig.outputSubfolder;
+    
+    // Normalize weights before recording
+    normalizeL1Weights();
+    
+    std::cout << "\n===== Starting Spike Recording =====" << std::endl;
+    std::cout << "Output folder: " << m_networkConf.getNetworkPath() << "statistics/" << outputFolder << "/" << std::endl;
+    if (!srConfig.layersToRecord.empty()) {
+        std::cout << "Recording layers: ";
+        for (size_t l : srConfig.layersToRecord) {
+            std::cout << l << " ";
+        }
+        std::cout << std::endl;
+    } else {
+        std::cout << "Recording all layers" << std::endl;
+    }
+    if (maxSamples > 0) {
+        std::cout << "Max samples per class: " << maxSamples << std::endl;
+    }
+    std::cout << std::endl;
+    
+    // Process each class
+    for (const auto& cls : dataset.classes) {
+        std::cout << "Processing class [" << cls.label << "] " << cls.name 
+                  << " (" << cls.sampleCount << " samples)..." << std::endl;
+        
+        size_t sampleCount = 0;
+        for (const auto& samplePath : cls.samplePaths) {
+            // Check max samples limit
+            if (maxSamples > 0 && sampleCount >= maxSamples) {
+                std::cout << "  Reached max samples limit (" << maxSamples << ")" << std::endl;
+                break;
+            }
+            
+            // Load and process events
+            setEventPath(samplePath);
+            std::vector<Event> events;
+            
+            // Set label parameters for the network
+            std::vector<std::vector<size_t>> params;
+            params.push_back({static_cast<size_t>(cls.label)});
+            setSequenceParameters(params);
+            
+            // Feed events through network
+            while (loadEvents(events, 1)) {
+                feedEvents(events);
+            }
+            events.clear();
+            
+            // Save statistics for this sample
+            // Folder structure: statistics/<outputFolder>/<label>/<sample_id>/
+            std::string folderPath = outputFolder + "/" + std::to_string(cls.label) + "/";
+            saveStatistics(sampleCount, 1, folderPath, true);
+            
+            sampleCount++;
+            
+            // Progress indicator every 100 samples
+            if (sampleCount % 100 == 0) {
+                std::cout << "  Processed " << sampleCount << "/" << cls.sampleCount << " samples" << std::endl;
+            }
+        }
+        
+        std::cout << "  Completed: " << sampleCount << " samples recorded" << std::endl;
+    }
+    
+    std::cout << "\n✓ Spike recording completed!" << std::endl;
+    std::cout << "Output saved to: " << m_networkConf.getNetworkPath() << "statistics/" << outputFolder << "/" << std::endl;
+    
+    return true;
 }

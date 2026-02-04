@@ -36,6 +36,13 @@ struct LayerConnectivity {
     std::vector<size_t> neuronOverlap;
 };
 
+struct SpikeRecordingConfig {
+    bool enabled = false;
+    std::vector<size_t> layersToRecord;  // Empty means all layers
+    size_t maxSamplesPerClass = 0;       // 0 means unlimited
+    std::string outputSubfolder = "recorded_spikes";
+};
+
 class NetworkConfig {
     /***** Display parameters *****/
     std::string m_networkPath;
@@ -50,6 +57,7 @@ class NetworkConfig {
     double measurementInterval{};
     std::vector<size_t> neuronInhibitionRange;
     std::vector<LayerConnectivity> connections;
+    SpikeRecordingConfig spikeRecording;
 
 public:
     NetworkConfig();
@@ -77,6 +85,17 @@ public:
     std::vector<LayerConnectivity> &getLayerConnectivity() { return connections; }
 
     std::vector<size_t> getNeuronInhibitionRange() { return neuronInhibitionRange; }
+
+    SpikeRecordingConfig& getSpikeRecordingConfig() { return spikeRecording; }
+
+    [[nodiscard]] bool isSpikeRecordingEnabled() const { return spikeRecording.enabled; }
+
+    [[nodiscard]] bool shouldRecordLayer(size_t layer) const {
+        if (spikeRecording.layersToRecord.empty()) return true;
+        return std::find(spikeRecording.layersToRecord.begin(), 
+                        spikeRecording.layersToRecord.end(), layer) 
+               != spikeRecording.layersToRecord.end();
+    }
 
     static void createNetwork(const std::string &directory, const std::function<NetConf()> &config);
 

@@ -5,18 +5,9 @@
 #include <network/NetworkHandle.hpp>
 #include <network/SurroundSuppression.hpp>
 #include <network/config/DefaultConfig.hpp>
+#include <network/DatasetScanner.hpp>
 
-int main(int argc, char *argv[]) {
-    bool recordSpikes = false;
-
-    if (argc == 5){
-        std::cout << "Spike recording enabled." << std::endl;
-        std::string recordFlag = argv[4];
-        std::istringstream(recordFlag) >> std::boolalpha >> recordSpikes;
-        std::cout << std::boolalpha;
-        std::cout << "recordSpikes = " << recordSpikes << std::endl;
-        std::cout << std::noboolalpha;
-    }
+int main(int argc, char *argv[]) { 
 
     if (argc > 2) {
         std::string networkPath = argv[1];
@@ -25,45 +16,55 @@ int main(int argc, char *argv[]) {
         size_t nbCount = std::atoi(argv[3]);
         std::vector<Event> events;
         std::cout << "argv[3] = " << nbCount << std::endl;
-        std::cout << "Feeding network... " << std::endl;
 
-        // ===== SPIKE RECORDING FOR CLASSIFICATION =====
-        // Uncomment and configure this section to record spikes for DVS-Gesture128 classification
-        // You need to set the paths to your 11 gesture folders and provide the corresponding labels
-        if (recordSpikes) {
-            std::cout << "\n===== Recording spikes for classification =====" << std::endl;
+        // Check if spike recording is enabled via config OR legacy flag
+        bool spikeRecordingEnabled = network.getNetworkConfig().isSpikeRecordingEnabled() || recordSpikesFlag;
+
+        if (spikeRecordingEnabled) {
+            std::cout << "\n===== Spike Recording Mode =====" << std::endl;
             
-            // Initialize gesture paths - update these paths to match your DVS-Gesture128 folder structure
-            std::vector<std::string> gesturePaths = {
-                eventsPath + "/0_hand_clapping",
-                eventsPath + "/1_right_hand_wave",
-                eventsPath + "/2_left_hand_wave",
-                eventsPath + "/3_right_arm_clockwise",
-                eventsPath + "/4_right_arm_counter_clockwise",
-                eventsPath + "/5_left_arm_clockwise",
-                eventsPath + "/6_left_arm_counter_clockwise",
-                eventsPath + "/7_arm_roll",
-                eventsPath + "/8_air_drums",
-                eventsPath + "/9_air_guitar",
-                eventsPath + "/10_other_gestures"
-            };
-            
-            // Initialize gesture labels (0-10 for 11 gesture classes, label-1 is used in ClassificationDescriptor)
-            std::vector<int> gestureLabels = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
-            
-            // Create SurroundSuppression object and record spikes
-            SurroundSuppression surround(networkPath, gesturePaths, network);
-            surround.classificationDescriptor(gesturePaths, gestureLabels);
-            
-            std::cout << "\n✓ Spike recording completed!" << std::endl;
-            std::cout << "Output saved to: " << networkPath << "statistics/gesture/" << std::endl;
+            // Check if it's a labeled dataset (has class subdirectories)
+            if (DatasetScanner::isLabeledDataset(eventsPath)) {
+                // Use the new config-driven approach with auto-detection for datasets
+                std::cout << "Detected labeled dataset" << std::endl;
+                if (!network.recordSpikesForDataset(eventsPath)) {
+                    std::cerr << "Spike recording failed!" << std::endl;
+                    return 1;
+                }
+            } else {
+                // Single file spike recording - DISABLED FOR NOW
+                // TODO: Implement spike timing recording per neuron per layer
+                // Currently, spike recording is only supported for labeled datasets (multi-file)
+                // For single files, we need a different approach:
+                //   - Option 1: Split into time windows and treat each as a sample
+                //   - Option 2: Record detailed spike timing for each neuron (different format)
+                //   - Option 3: Process entire file as one sample (current approach, commented out)
+                
+                std::cerr << "Error: Spike recording is only supported for labeled datasets." << std::endl;
+                std::cerr << "Expected structure: " << eventsPath << "/<class_0>/*.npz, <class_1>/*.npz, ..." << std::endl;
+                std::cerr << "For single-file spike analysis, please use normal inference mode." << std::endl;
+                return 1;
+                
+                // std::cout << "Processing single file with spike recording" << std::endl;
+                // const auto& srConfig = network.getNetworkConfig().getSpikeRecordingConfig();
+                // std::cout << "Output folder: " << networkPath << "statistics/" << srConfig.outputSubfolder << "/" << std::endl;
+                // 
+                // while (network.loadEvents(events, nbCount)) {
+                //     network.feedEvents(events);
+                // }
+                // 
+                // // Save statistics for single file
+                // // Folder structure: statistics/<outputFolder>/0/
+                // std::string folderPath = srConfig.outputSubfolder;
+                // network.saveStatistics(0, 1, folderPath, true);
+                // 
+                // std::cout << "\n✓ Spike recording completed!" << std::endl;
+                // std::cout << "Output saved to: " << networkPath << "statistics/" << folderPath << std::endl;
+            }
         } 
-        // ===== NORMAL TRAINING/INFERENCE MODE =====
+        // Normal training/inference mode (no spike recording)
         else {
             std::cout << "Feeding network... " << std::endl;
-            
-            // Initialize network with event file
-            NetworkHandle network(networkPath, eventsPath);
             
             while (network.loadEvents(events, nbCount)) {
                 network.feedEvents(events);
