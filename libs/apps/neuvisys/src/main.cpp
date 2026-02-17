@@ -17,8 +17,8 @@ int main(int argc, char *argv[]) {
         std::vector<Event> events;
         std::cout << "argv[3] = " << nbCount << std::endl;
 
-        // Check if spike recording is enabled via config OR legacy flag
-        bool spikeRecordingEnabled = network.getNetworkConfig().isSpikeRecordingEnabled() || recordSpikesFlag;
+        // Check if spike recording is enabled via config
+        bool spikeRecordingEnabled = network.getNetworkConfig().isSpikeRecordingEnabled();
 
         if (spikeRecordingEnabled) {
             std::cout << "\n===== Spike Recording Mode =====" << std::endl;

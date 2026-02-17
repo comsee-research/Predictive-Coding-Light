@@ -131,8 +131,8 @@ void DatasetScanner::printStructure(const DatasetStructure& structure) {
 }
 
 int DatasetScanner::extractNumericPrefix(const std::string& folderName) {
-    // Match patterns like "0_name", "10_name", "123_name"
-    std::regex prefixRegex("^(\\d+)_.*");
+    // Match patterns like "0_name", "10_name", "123_name", or just "0", "1", "2"
+    std::regex prefixRegex("^(\\d+)(?:_.*)?$");
     std::smatch match;
     
     if (std::regex_match(folderName, match, prefixRegex)) {
@@ -142,7 +142,8 @@ int DatasetScanner::extractNumericPrefix(const std::string& folderName) {
 }
 
 std::string DatasetScanner::extractClassName(const std::string& folderName) {
-    // Remove numeric prefix if present
+    // Remove numeric prefix if present (e.g., "0_name" -> "name")
+    // If just a number (e.g., "0"), return the number itself
     std::regex prefixRegex("^\\d+_(.*)");
     std::smatch match;
     
