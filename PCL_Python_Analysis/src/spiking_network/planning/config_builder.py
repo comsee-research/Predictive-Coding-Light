@@ -92,20 +92,20 @@ class ConfigBuilder:
             "nbCameras": 1,
             "neuron1Synapses": 1,
             "sharingType": "patch",
-            "vfWidth": 66,
-            "vfHeight": 66,
+            "vfWidth": 346,
+            "vfHeight": 260,
             "measurementInterval": 100,
             "neuronInhibitionRange": [4, 4],
             "neuronType": ["SimpleCell", "ComplexCell"],
             "layerInhibitions": [
                 ["local", "lateral"],
-                ["local", "lateral", "topdown"]
+                ["local", "topdown"]
             ],
             "interLayerConnections": [[-1], [0]],
             "layerPatches": [[[0], [0], [0]], [[0], [0], [0]]],
             "layerSizes": [[9, 9, 64], [6, 6, 32]],
             "neuronSizes": [[[10, 10, 1]], [[4, 4, 64]]],
-            "neuronOverlap": [[3, 3, 0], [3, 3, 0]],
+            "neuronOverlap": [[3, 3, 0], [3, 3, 64]],
             # Spike recording defaults (disabled)
             "spikeRecording": {
                 "enabled": False,
@@ -116,54 +116,67 @@ class ConfigBuilder:
         }
         
         # Default simple cell config
+        # Mapping to table parameters:
+        #   V_reset=VRESET, V_thresh=VTHRESH, τ_m=TAU_M, τ_RP=TAU_RP,
+        #   τ_LTP=TAU_LTP, τ_LTD=TAU_LTD, η_RP=ETA_RP (refractory delta, stored as DELTA_RP in C++)
+        #   λ excit=NORM_FACTOR, λ loc.inhib=ETA_INH, λ dist.inhib=LATERAL_NORM_FACTOR,
+        #   λ td.inhib=TOPDOWN_NORM_FACTOR
+        #   Excit η_LTP/LTD = ETA_LTP/ETA_LTD
+        #   Inhib effective η_LTP/LTD = ETA_ILTP × λ_type (single ETA_ILTP shared across inhib types)
+        #   η_+/- (soft-bound factors) and w_max are hardcoded in C++ weightUpdate()
         builder._simple_cell_config = {
-            "ETA_LTP": 0.000204,
-            "ETA_LTD": -0.000204,
-            "ETA_ILTP": 0.33,
-            "ETA_ILTD": -0.33,
+            "ETA_LTP": 0.00000408,           # excit η_LTP/LTD = ±0.000204
+            "ETA_LTD": -0.00000408,
+            "ETA_ILTP": 0.000408,          # inhib learning rate; effective rates = ETA_ILTP × λ:
+                                            #   dist: 0.000408 × 6500 = 2.652
+                                            #   loc:  0.000408 × 1500 = 0.612
+                                            #   td:   0.000408 × 3500 = 1.428
+            "ETA_ILTD": -0.000408,
             "ETA_TA": 0,
-            "ETA_RP": 10,
+            "ETA_RP": 10,                  # η_RP (refractory potential delta)
             "ETA_SRA": 0,
-            "ETA_INH": 1500,
-            "TAU_LTP": 7,
-            "TAU_LTD": 7,
-            "TAU_M": 18,
-            "TAU_RP": 5,
-            "TAU_SRA": 100,
-            "VTHRESH": 10,
-            "VRESET": -10,
+            "ETA_INH": 1500,               # λ loc. inhib. (local inhibition norm factor)
+            "TAU_LTP": 7,                  # τ_LTP (ms)
+            "TAU_LTD": 7,                  # τ_LTD (ms)
+            "TAU_M": 18,                   # τ_m (ms)
+            "TAU_RP": 5,                   # τ_RP (ms)
+            "TAU_SRA": 18,
+            "VTHRESH": 10,                 # V_thresh (mV)
+            "VRESET": -10,                 # V_reset (mV)
             "SYNAPSE_DELAY": 0,
-            "NORM_FACTOR": 50,
-            "LATERAL_NORM_FACTOR": 6500,
-            "TOPDOWN_NORM_FACTOR": 3500,
+            "NORM_FACTOR": 50,             # λ excit (excitatory norm factor)
+            "LATERAL_NORM_FACTOR": 6500,   # λ dist. inhib. (lateral/distant inhibition norm factor)
+            "TOPDOWN_NORM_FACTOR": 3500,   # λ td. inhib. (top-down inhibition norm factor)
             "DECAY_RATE": 0,
             "TARGET_SPIKE_RATE": 0.75,
             "MIN_THRESH": 4,
             "STDP_LEARNING": "all",
             "TRACKING": "none",
-            "POTENTIAL_TRACK": [4, 4],
+            "POTENTIAL_TRACK": [-4, -4],
             "DECAY_LEARNING": 0
         }
         
         # Default complex cell config
+        # Same key mapping as simple cells (see comments above)
+        # Complex cells only have local inhibition (no lateral/topdown)
         builder._complex_cell_config = {
-            "ETA_LTP": 0.00017,
-            "ETA_LTD": -0.00017,
-            "ETA_ILTP": 0.2,
-            "ETA_ILTD": -0.2,
-            "ETA_INH": 500,
-            "ETA_RP": 5,
-            "TAU_LTP": 7,
-            "TAU_LTD": 7,
-            "TAU_M": 20,
-            "TAU_RP": 10,
-            "VTHRESH": 8,
-            "VRESET": -8,
-            "NORM_FACTOR": 100,
+            "ETA_LTP": 0.00002,            # excit η_LTP/LTD: effective = 0.00008 × 1000 = 0.08
+            "ETA_LTD": -0.00002,
+            "ETA_ILTP": 0.00008,           # loc inhib η_LTP/LTD: effective = 0.00008 × 600 = 0.048
+            "ETA_ILTD": -0.00008,
+            "ETA_INH": 600,                # λ loc. inhib. = 600
+            "ETA_RP": 10,                   # η_RP = 5
+            "TAU_LTP": 40,                 # τ_LTP = 40 ms
+            "TAU_LTD": 40,                 # τ_LTD = 40 ms
+            "TAU_M": 50,                   # τ_m = 50 ms
+            "TAU_RP": 5,                   # τ_RP = 5 ms
+            "VTHRESH": 3,                  # V_thresh = 3 mV
+            "VRESET": -10,                 # V_reset = -10 mV
+            "NORM_FACTOR": 1000,           # λ excit = 1000
             "DECAY_RATE": 0,
             "STDP_LEARNING": "all",
             "TRACKING": "none",
-            "POTENTIAL_TRACK": [3, 3]
+            "POTENTIAL_TRACK": [-2, -3]
         }
         
         return builder

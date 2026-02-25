@@ -117,16 +117,6 @@ File: `configs/simple_cell_config.json`
 | `TAU_MINUS` | int | STDP depression time window | `20000` | µs |
 | `TAU_PLUS` | int | STDP potentiation time window | `20000` | µs |
 
-### Recording & Tracking
-
-| Parameter | Type | Description | Values |
-|-----------|------|-------------|--------|
-| `TRACKING` | string | ??? | `"none"`, `"partial"` |
-| `POTENTIAL_TRACK` | array | Specific neuron to track `[x, y]` | `[0, 0]` |
-
-**TRACKING modes:**
-- `"none"`: ???
-- `"partial"`: ???
 
 ---
 
